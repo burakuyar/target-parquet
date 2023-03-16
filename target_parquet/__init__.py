@@ -1,25 +1,33 @@
 #!/usr/bin/env python3
+
+from __future__ import annotations
+
 import argparse
-from datetime import datetime
-from io import TextIOWrapper
-import http.client
-import simplejson as json
-from jsonschema.validators import Draft4Validator
-import os
-import pkg_resources
-import pyarrow as pa
-from pyarrow.parquet import ParquetWriter
-import singer
-import sys
-import urllib
-import psutil
-import time
-import threading
 import gc
+import http.client
+import os
+import sys
+import threading
+import time
+import urllib
+from datetime import datetime
 from enum import Enum
-from multiprocessing import Process, Queue
+from io import TextIOWrapper
+from multiprocessing import get_context
+from typing import TYPE_CHECKING
+
+import pkg_resources
+import psutil
+import pyarrow as pa
+import simplejson as json
+import singer
+from jsonschema.validators import Draft4Validator
+from pyarrow.parquet import ParquetWriter
 
 from .helpers import flatten, flatten_schema
+
+if TYPE_CHECKING:
+    from multiprocessing import Queue
 
 _all__ = ["main"]
 
@@ -75,6 +83,12 @@ def persist_messages(
     streams_in_separate_folder=False,
     file_size=-1,
 ):
+    # Multiprocessing context
+    if sys.platform == "darwin":
+        ctx = get_context("fork")
+    else:
+        ctx = get_context("spawn")
+
     ## Static information shared among processes
     schemas = {}
     key_properties = {}
@@ -218,8 +232,8 @@ def persist_messages(
                 LOGGER.debug(f"Wrote {files_created} files")
                 break
 
-    q = Queue()
-    t2 = Process(
+    q = ctx.Queue()
+    t2 = ctx.Process(
         target=consumer,
         args=(q,),
     )
