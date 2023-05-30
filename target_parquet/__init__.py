@@ -84,7 +84,7 @@ def persist_messages(
     file_size=-1,
 ):
     # Multiprocessing context
-    if sys.platform == "darwin":
+    if sys.platform == "darwin" or sys.platform == 'linux':
         ctx = get_context("fork")
     else:
         ctx = get_context("spawn")
