@@ -13,7 +13,7 @@ setup(
     install_requires=[
         "jsonschema==2.6.0",
         "singer-python==5.12.2",
-        "pyarrow==10.0.1",
+        "pyarrow==14.0.1",
         "psutil==5.9.1",
     ],
     extras_require={"dev": ["pytest==7.1.2", "pandas==1.4.2"]},
