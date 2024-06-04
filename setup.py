@@ -11,10 +11,10 @@ setup(
     classifiers=["Programming Language :: Python :: 3 :: Only"],
     py_modules=["target_parquet"],
     install_requires=[
-        "jsonschema==2.6.0",
-        "singer-python==5.12.2",
-        "pyarrow==14.0.1",
-        "psutil==5.9.1",
+        "jsonschema>=2.6.0",
+        "singer-python>=5.12.2",
+        "pyarrow>=14.0.1",
+        "psutil>=5.9.1",
     ],
     extras_require={"dev": ["pytest==7.1.2", "pandas==1.4.2"]},
     entry_points="""
