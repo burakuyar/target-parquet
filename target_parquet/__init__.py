@@ -213,15 +213,18 @@ def persist_messages(
                 schemas[stream_name] = record
                 
             elif message_type == MessageType.EOF:
-                file_records = records.pop(current_stream_name)
-                LOGGER.info(f"{len(file_records)} records in stream {current_stream_name}.")
-                
-                files_created.append(
-                    write_file(current_stream_name, file_records)
-                )
-                
+                for file_stream, file_records in records.items():
+                    LOGGER.info(f"{len(file_records)} records in stream {file_stream}.")
+                    files_created.append(
+                        write_file(file_stream, file_records)
+                    )
+
+                # All streams are consumed.
                 LOGGER.info(f"Wrote {len(files_created)} files")
                 LOGGER.debug(f"Wrote {files_created} files")
+
+                # TODO: check for any remainders.
+                LOGGER.info(records)
                 break
 
     q = ctx.Queue()
