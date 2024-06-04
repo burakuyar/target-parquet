@@ -182,10 +182,11 @@ def persist_messages(
             + ".parquet"
         )
         filepath = os.path.expanduser(os.path.join(destination_path, filename))
-        with open(filepath, "wb") as f:
-            ParquetWriter(
-                f, dataframe.schema, compression=compression_method, version=parquet_version
-            ).write_table(dataframe)
+        LOGGER.info(f"target-parquet filepath is: {filepath}")
+        ParquetWriter(
+            filepath, dataframe.schema, compression=compression_method, version=parquet_version
+        ).write_table(dataframe)
+
         ## explicit memory management. This can be usefull when working on very large data groups
         del dataframe
         return filepath
